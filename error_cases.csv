@@ -1,0 +1,160 @@
+,id,category,question,generated_cypher,context,final_answer,syntax_valid,execution_success,error_message,gt_cypher,gt_context,gt_answer,gt_reason,Contextual_Recall,Contextual_Recall_Reason,Contextual_Relevancy,Contextual_Relevancy_Reason,Faithfulness,Faithfulness_Reason,Answer_Relevancy,Answer_Relevancy_Reason,Answer_Correctness,Answer_Correctness_Reason
+6,7,Schema/Summary,Identify the top 3 parameter pairs that have the highest chance of having 'large' stress.,"MATCH (sh:Shape_Parameters)<-[:HAS_SHAPE_PARAMETERS]-(i:ID)-[:HAS_STRESS_STATUS]->(st:Stress_Status {Status: 'large'})
+MATCH (i)-[:HAS_POSITION_PARAMETERS]->(p:Position_Parameters)
+WITH sh.A_Area AS shape_area, sh.S1_LongMajorAxis AS shape_major_axis, p.R_RotationAngle AS position_rotation, count(i) AS large_stress_count
+ORDER BY large_stress_count DESC
+LIMIT 3
+RETURN shape_area, shape_major_axis, position_rotation, large_stress_count
+","[{'shape_area': 'A3', 'shape_major_axis': 'S12', 'position_rotation': 'R6', 'large_stress_count': 6}, {'shape_area': 'A8', 'shape_major_axis': 'S12', 'position_rotation': 'R3', 'large_stress_count': 6}, {'shape_area': 'A3', 'shape_major_axis': 'S12', 'position_rotation': 'R5', 'large_stress_count': 6}]","Based on the database records, here are the top 3 parameter combinations most frequently associated with large stress:
+
+1. (A3, S12, R6) with 6 recorded events.
+2. (A8, S12, R3) with 6 recorded events.
+3. (A3, S12, R5) with 6 recorded events.
+",1,1,,"MATCH (sh:Shape_Parameters)<-[:HAS_SHAPE_PARAMETERS]-(i:ID)-[:HAS_POSITION_PARAMETERS]->(p:Position_Parameters)
+MATCH (i)-[:HAS_STRESS_STATUS]->(s:Stress_Status {Status: 'large'})
+WITH sh, p, count(DISTINCT i) AS large_stress_count
+ORDER BY large_stress_count DESC
+LIMIT 3
+RETURN 
+    sh.A_Area AS Area, 
+    sh.S1_LongMajorAxis AS S1, 
+    sh.S2_ShortMajorAxis AS S2, 
+    p.R_RotationAngle AS Angle, 
+    p.C_EllipseCnter AS Center, 
+    large_stress_count AS Frequency","[{'Area':'A3', 'S1': 'S12', 'S2': 'S21', 'Angle': 'R5', 'Center': 'C4', 'Frequency':4},{'Area':'A3', 'S1': 'S12', 'S2': 'S21', 'Angle': 'R6', 'Center': 'C4', 'Frequency':3},{'Area':'A5', 'S1': 'S12', 'S2': 'S23', 'Angle': 'Rr', 'Center': 'C2, 'Frequency':3} ]","Based on the database records, the following parameter pairs have the highest change of having 'large' stress are:
+- A3, S12, S21, R5, C5, with 4 cases
+- A3, S12, S21, R6, C4, with 3 cases
+- A5, S12, S23, R3, C2, with 3 cases",,0.221,"The expected output lists parameter pairs with specific counts of 'large' stress cases, but the retrieval context provides different parameter pairs and counts. The retrieval context mentions 'A3, S12, R6' and 'A3, S12, R5' with 6 cases each, which partially aligns with the expected output, but the counts and some parameters do not match. There is a significant gap as the expected output's parameter pairs and counts are not directly supported by the retrieval context.",0.941,"The retrieval context directly addresses the main topic by providing a Cypher query and results that identify the top 3 parameter pairs with 'large' stress, aligning well with the input request. It enhances understanding by detailing the parameters involved (shape_area, shape_major_axis, position_rotation) and their counts. There is no contradictory or irrelevant information, and the coherence between the input and retrieval context is strong, as the context logically follows from the input question.",1.0,"The actual output accurately lists the top 3 parameter combinations with the highest frequency of large stress events, as provided in the retrieval context. Each claim in the output matches the data from the context, including the specific parameter combinations and their associated counts. The response is fully aligned with the evaluation steps, demonstrating faithfulness and accuracy without any errors or omissions.",0.875,"The response correctly identifies the top 3 parameter pairs associated with 'large' stress, fulfilling the core objective of the input question. It provides the parameter combinations and the number of recorded events, which aligns with the requirement to identify those with the highest chance of large stress. However, it does not explicitly state that these are the highest chances, only that they are most frequently associated, which slightly affects clarity.",0.17,"The primary factual conclusions in the actual and expected outputs do not match. The actual output lists different parameter combinations and frequencies compared to the expected output. While both outputs aim to identify parameter pairs associated with large stress, the specific combinations and their frequencies differ significantly, indicating a lack of alignment in core facts."
+9,10,Schema/Summary,What are the top 3 geometric areas (A) associated with frequent high-stress outcomes?,"MATCH (sh:Shape_Parameters)<-[:HAS_SHAPE_PARAMETERS]-(i:ID)-[:HAS_STRESS_STATUS]->(st:Stress_Status {Status: 'large'})
+WITH sh, count(i) AS large_stress_count
+ORDER BY large_stress_count DESC
+LIMIT 3
+RETURN sh.A_Area, large_stress_count
+","[{'sh.A_Area': 'A3', 'large_stress_count': 20}, {'sh.A_Area': 'A5', 'large_stress_count': 19}, {'sh.A_Area': 'A5', 'large_stress_count': 15}]","Based on the database records, here are the top 3 geometric areas most frequently associated with high-stress outcomes:
+1. Area A3 (20 cases)
+2. Area A5 (19 cases)
+3. Area A5 (15 cases)
+",1,1,,"MATCH (i:ID)-[:HAS_SHAPE_PARAMETERS]->(sp:Shape_Parameters), (i)-[:HAS_STRESS_STATUS]->(ss:Stress_Status)
+WHERE ss.Status = 'large'
+RETURN sp.A_Area AS geometric_area, COUNT(*) AS frequency
+ORDER BY frequency DESC, geometric_area ASC
+LIMIT 3","[{'geometric_area': 'A8', 'frequency': 46},{'geometric_area': 'A5', 'frequency': 44},{'geometric_area': 'A4', 'frequency': 34}]","Based on the provided database context, the top 3 geometric areas (A) associated with frequent high-stress outcomes are as follows:
+
+1. Area A8 - 46 cases
+
+2. Area A5 - 44 cases
+
+3. Area A4 - 34 cases",,0.16,"The expected output lists Areas A8, A5, and A4 with specific case counts, but the retrieval context only provides data for Areas A3 and A5 with different counts. There is a partial match for Area A5, but the counts do not align, and Areas A8 and A4 are missing entirely from the retrieval context, indicating significant gaps in the data provided.",0.785,"The retrieval context directly addresses the main topic by providing a query and results that identify the top geometric areas associated with high-stress outcomes, which aligns with the input question. It enhances understanding by showing the query logic and the resulting areas with their stress counts. However, there is a minor inconsistency in the result set where 'A5' appears twice with different counts, which slightly affects coherence.",0.827,"The actual output correctly identifies the top 3 geometric areas associated with high-stress outcomes as A3 and A5, matching the retrieval context. However, it lists A5 twice, which is a minor discrepancy since the context shows A5 with two different counts. The output should have clarified the distinction between the two entries for A5.",0.605,"The response correctly identifies the top 3 geometric areas associated with frequent high-stress outcomes, addressing the core objective of the input question. However, there is a mistake in listing 'Area A5' twice with different case numbers, which introduces an error in the ranking and affects the accuracy of the answer.",0.22,"The primary factual conclusions in the actual and expected outputs do not match. The actual output lists Area A3, A5, and A5 again, while the expected output lists Area A8, A5, and A4. Only Area A5 is common between both outputs, but the case numbers differ. The repetition of Area A5 in the actual output suggests an error. The core facts do not align, leading to a low score."
+17,18,Schema/Summary,Find the shape parameters where 'medium' stress events occur significantly more often than 'small' stress events.,"MATCH (sh:Shape_Parameters)<-[:HAS_SHAPE_PARAMETERS]-(i:ID)-[:HAS_STRESS_STATUS]->(st:Stress_Status)
+WITH sh, sum(CASE WHEN st.Status = 'medium' THEN 1 ELSE 0 END) AS medium_count, sum(CASE WHEN st.Status = 'small' THEN 1 ELSE 0 END) AS small_count
+WHERE medium_count > small_count
+RETURN sh.A_Area, sh.S1_LongMajorAxis, sh.S2_ShortMajorAxis, medium_count, small_count
+","[{'sh.A_Area': 'A8', 'sh.S1_LongMajorAxis': 'S13', 'sh.S2_ShortMajorAxis': 'S23', 'medium_count': 9, 'small_count': 8}, {'sh.A_Area': 'A1', 'sh.S1_LongMajorAxis': 'S15', 'sh.S2_ShortMajorAxis': 'S25', 'medium_count': 11, 'small_count': 9}, {'sh.A_Area': 'A2', 'sh.S1_LongMajorAxis': 'S15', 'sh.S2_ShortMajorAxis': 'S24', 'medium_count': 10, 'small_count': 9}, {'sh.A_Area': 'A8', 'sh.S1_LongMajorAxis': 'S12', 'sh.S2_ShortMajorAxis': 'S25', 'medium_count': 6, 'small_count': 4}, {'sh.A_Area': 'A7', 'sh.S1_LongMajorAxis': 'S12', 'sh.S2_ShortMajorAxis': 'S22', 'medium_count': 6, 'small_count': 3}, {'sh.A_Area': 'A7', 'sh.S1_LongMajorAxis': 'S13', 'sh.S2_ShortMajorAxis': 'S22', 'medium_count': 14, 'small_count': 8}, {'sh.A_Area': 'A8', 'sh.S1_LongMajorAxis': 'S13', 'sh.S2_ShortMajorAxis': 'S21', 'medium_count': 2, 'small_count': 1}, {'sh.A_Area': 'A4', 'sh.S1_LongMajorAxis': 'S12', 'sh.S2_ShortMajorAxis': 'S22', 'medium_count': 9, 'small_count': 4}, {'sh.A_Area': 'A2', 'sh.S1_LongMajorAxis': 'S13', 'sh.S2_ShortMajorAxis': 'S24', 'medium_count': 14, 'small_count': 10}, {'sh.A_Area': 'A7', 'sh.S1_LongMajorAxis': 'S15', 'sh.S2_ShortMajorAxis': 'S22', 'medium_count': 9, 'small_count': 6}, {'sh.A_Area': 'A4', 'sh.S1_LongMajorAxis': 'S15', 'sh.S2_ShortMajorAxis': 'S22', 'medium_count': 9, 'small_count': 4}, {'sh.A_Area': 'A3', 'sh.S1_LongMajorAxis': 'S15', 'sh.S2_ShortMajorAxis': 'S21', 'medium_count': 8, 'small_count': 2}, {'sh.A_Area': 'A1', 'sh.S1_LongMajorAxis': 'S12', 'sh.S2_ShortMajorAxis': 'S25', 'medium_count': 5, 'small_count': 4}, {'sh.A_Area': 'A1', 'sh.S1_LongMajorAxis': 'S13', 'sh.S2_ShortMajorAxis': 'S25', 'medium_count': 10, 'small_count': 7}, {'sh.A_Area': 'A5', 'sh.S1_LongMajorAxis': 'S13', 'sh.S2_ShortMajorAxis': 'S23', 'medium_count': 2, 'small_count': 1}, {'sh.A_Area': 'A7', 'sh.S1_LongMajorAxis': 'S12', 'sh.S2_ShortMajorAxis': 'S24', 'medium_count': 4, 'small_count': 1}, {'sh.A_Area': 'A1', 'sh.S1_LongMajorAxis': 'S12', 'sh.S2_ShortMajorAxis': 'S22', 'medium_count': 3, 'small_count': 1}, {'sh.A_Area': 'A1', 'sh.S1_LongMajorAxis': 'S16', 'sh.S2_ShortMajorAxis': 'S25', 'medium_count': 2, 'small_count': 1}, {'sh.A_Area': 'A2', 'sh.S1_LongMajorAxis': 'S16', 'sh.S2_ShortMajorAxis': 'S24', 'medium_count': 3, 'small_count': 1}, {'sh.A_Area': 'A8', 'sh.S1_LongMajorAxis': 'S15', 'sh.S2_ShortMajorAxis': 'S23', 'medium_count': 8, 'small_count': 3}, {'sh.A_Area': 'A5', 'sh.S1_LongMajorAxis': 'S15', 'sh.S2_ShortMajorAxis': 'S21', 'medium_count': 3, 'small_count': 0}, {'sh.A_Area': 'A5', 'sh.S1_LongMajorAxis': 'S12', 'sh.S2_ShortMajorAxis': 'S21', 'medium_count': 1, 'small_count': 0}]","Based on the database records, here's an analysis of shape parameters associated with a higher frequency of 'medium' stress compared to 'small' stress:
+
+1.  (A7, S13, S22) with 14 medium events and 8 small events.
+2.  (A2, S13, S24) with 14 medium events and 10 small events.
+3.  (A7, S15, S22) with 9 medium events and 6 small events.
+4.  (A1, S13, S25) with 10 medium events and 7 small events.
+5.  (A8, S15, S23) with 8 medium events and 3 small events.
+
+The shape parameter combination (A7, S13, S22) exhibits the most significant difference in event counts, with 14 medium stress events and 8 small stress events.",1,1,,"MATCH (i:ID)-[:HAS_STRESS_STATUS]->(s:Stress_Status)
+WHERE s.Status IN ['medium', 'small']
+MATCH (i)-[:HAS_SHAPE_PARAMETERS]->(sh:Shape_Parameters)
+WITH sh, 
+     sum(CASE s.Status WHEN 'medium' THEN 1 ELSE 0 END) AS medium_cnt,
+     sum(CASE s.Status WHEN 'small' THEN 1 ELSE 0 END) AS small_cnt
+WHERE medium_cnt > small_cnt
+RETURN sh.A_Area, sh.S1_LongMajorAxis, sh.S2_ShortMajorAxis LIMIT 5","[{'sh.A_Area': 'A8', 'sh.S1_LongMajorAxis': 'S13', 'sh.S2_ShortMajorAxis': 'S23'}, {'sh.A_Area': 'A1', 'sh.S1_LongMajorAxis': 'S15', 'sh.S2_ShortMajorAxis': 'S25'}, {'sh.A_Area': 'A2', 'sh.S1_LongMajorAxis': 'S15', 'sh.S2_ShortMajorAxis': 'S24'}, {'sh.A_Area': 'A8', 'sh.S1_LongMajorAxis': 'S12', 'sh.S2_ShortMajorAxis': 'S25'}, {'sh.A_Area': 'A7', 'sh.S1_LongMajorAxis': 'S12', 'sh.S2_ShortMajorAxis': 'S22'}]","Based on the provided database context, the following shape parameters occur in 'medium' stress more often than 'small' stress:
+
+Configuration: A8 - S13 - S23 
+Configuration: A1 - S15 - S25
+Configuration: A2 - S15 - S24 
+Configuration: A8 - S12 - S25 
+Configuration: A7 - S12 - S22 ",,0.943,"All configurations listed in the expected output are directly supported by the retrieval context. Each configuration in the expected output is present in the database result set with 'medium' stress events occurring more often than 'small' stress events, fulfilling the requirement of the input query. There are no gaps or missing information between the expected output and the retrieval context.",0.938,"The retrieval context directly addresses the main topic by providing a Cypher query and results that identify shape parameters where 'medium' stress events occur more frequently than 'small' ones, aligning well with the input request. It enhances understanding by showing specific shape parameters and counts of stress events, which are relevant and do not contradict the input. The coherence between the input and retrieval context is strong, as the context logically follows from the input question. However, the context could be slightly improved by providing a brief explanation of the query logic for clarity.",0.978,"The actual output accurately extracts and lists shape parameters where 'medium' stress events occur more frequently than 'small' stress events, as supported by the retrieval context. Each claim in the output is directly verified by the data provided, with correct counts for medium and small events. The output also correctly identifies the shape parameter combination with the most significant difference in event counts, aligning perfectly with the context data.",0.86,"The response identifies shape parameters where 'medium' stress events occur more frequently than 'small' stress events, aligning with the core objective. It provides specific examples and highlights the most significant difference, fulfilling the requirement for additional context. However, the term 'significantly more often' could be interpreted as needing a larger difference than presented, slightly affecting the alignment with the core objective.",0.343,"The primary factual conclusion in the expected output is a list of shape parameters where 'medium' stress events occur more often than 'small' stress events. The actual output provides a similar list but with different configurations and includes specific event counts. While both outputs aim to identify configurations with more 'medium' than 'small' events, the actual output's configurations do not match those in the expected output, indicating a conceptual mismatch. The additional event count data in the actual output is treated neutrally."
+21,22,Schema/Summary,"Which Position Parameters (Center, Rotation) typically lead to a 'medium' stress status across the entire dataset?","MATCH (p:Position_Parameters)<-[:HAS_POSITION_PARAMETERS]-(i:ID)-[:HAS_STRESS_STATUS]->(s:Stress_Status {Status: 'medium'})
+RETURN p.C_EllipseCnter, p.R_RotationAngle, count(i) AS event_count
+ORDER BY event_count DESC
+","[{'p.C_EllipseCnter': 'C4', 'p.R_RotationAngle': 'R6', 'event_count': 27}, {'p.C_EllipseCnter': 'C2', 'p.R_RotationAngle': 'R2', 'event_count': 26}, {'p.C_EllipseCnter': 'C2', 'p.R_RotationAngle': 'R1', 'event_count': 22}, {'p.C_EllipseCnter': 'C4', 'p.R_RotationAngle': 'R1', 'event_count': 22}, {'p.C_EllipseCnter': 'C2', 'p.R_RotationAngle': 'R4', 'event_count': 17}, {'p.C_EllipseCnter': 'C4', 'p.R_RotationAngle': 'R5', 'event_count': 15}, {'p.C_EllipseCnter': 'C2', 'p.R_RotationAngle': 'R6', 'event_count': 15}, {'p.C_EllipseCnter': 'C5', 'p.R_RotationAngle': 'R6', 'event_count': 13}, {'p.C_EllipseCnter': 'C2', 'p.R_RotationAngle': 'R5', 'event_count': 13}, {'p.C_EllipseCnter': 'C2', 'p.R_RotationAngle': 'R3', 'event_count': 13}, {'p.C_EllipseCnter': 'C6', 'p.R_RotationAngle': 'R5', 'event_count': 12}, {'p.C_EllipseCnter': 'C4', 'p.R_RotationAngle': 'R2', 'event_count': 11}, {'p.C_EllipseCnter': 'C1', 'p.R_RotationAngle': 'R6', 'event_count': 11}, {'p.C_EllipseCnter': 'C5', 'p.R_RotationAngle': 'R5', 'event_count': 11}, {'p.C_EllipseCnter': 'C5', 'p.R_RotationAngle': 'R2', 'event_count': 9}, {'p.C_EllipseCnter': 'C5', 'p.R_RotationAngle': 'R1', 'event_count': 9}, {'p.C_EllipseCnter': 'C4', 'p.R_RotationAngle': 'R3', 'event_count': 9}, {'p.C_EllipseCnter': 'C1', 'p.R_RotationAngle': 'R5', 'event_count': 7}, {'p.C_EllipseCnter': 'C1', 'p.R_RotationAngle': 'R1', 'event_count': 6}, {'p.C_EllipseCnter': 'C6', 'p.R_RotationAngle': 'R1', 'event_count': 6}, {'p.C_EllipseCnter': 'C5', 'p.R_RotationAngle': 'R3', 'event_count': 6}, {'p.C_EllipseCnter': 'C4', 'p.R_RotationAngle': 'R4', 'event_count': 5}, {'p.C_EllipseCnter': 'C6', 'p.R_RotationAngle': 'R6', 'event_count': 4}, {'p.C_EllipseCnter': 'C6', 'p.R_RotationAngle': 'R3', 'event_count': 4}, {'p.C_EllipseCnter': 'C6', 'p.R_RotationAngle': 'R2', 'event_count': 4}, {'p.C_EllipseCnter': 'C6', 'p.R_RotationAngle': 'R4', 'event_count': 4}, {'p.C_EllipseCnter': 'C5', 'p.R_RotationAngle': 'R4', 'event_count': 3}, {'p.C_EllipseCnter': 'C1', 'p.R_RotationAngle': 'R2', 'event_count': 2}, {'p.C_EllipseCnter': 'C3', 'p.R_RotationAngle': 'R1', 'event_count': 1}, {'p.C_EllipseCnter': 'C1', 'p.R_RotationAngle': 'R4', 'event_count': 1}, {'p.C_EllipseCnter': 'C3', 'p.R_RotationAngle': 'R3', 'event_count': 1}, {'p.C_EllipseCnter': 'C1', 'p.R_RotationAngle': 'R3', 'event_count': 1}]","Based on the provided database context, here are the top 10 position parameters (Center, Rotation) most frequently associated with events:
+
+1.  (C4, R6) with 27 recorded events.
+2.  (C2, R2) with 26 recorded events.
+3.  (C2, R1) with 22 recorded events.
+4.  (C4, R1) with 22 recorded events.
+5.  (C2, R4) with 17 recorded events.
+6.  (C4, R5) with 15 recorded events.
+7.  (C2, R6) with 15 recorded events.
+8.  (C5, R6) with 13 recorded events.
+9.  (C2, R5) with 13 recorded events.
+10. (C2, R3) with 13 recorded events.
+
+It's important to note that the provided data does not directly link these position parameters to a 'medium' stress status. The question asked for parameters leading to 'medium' stress, but the database only contains event counts for each parameter combination. Therefore, this list represents the most frequent position parameter combinations observed in the dataset, regardless of stress status.",1,1,,"MATCH (i:ID)-[:HAS_STRESS_STATUS]->(s:Stress_Status)
+WHERE s.Status = 'medium'
+MATCH (i)-[:HAS_SHAPE_PARAMETERS]->(sp:Shape_Parameters)
+WITH sp.S1_LongMajorAxis AS S1, sp.S2_ShortMajorAxis AS S2, sp.A_Area AS A, COUNT(i) AS frequency
+RETURN S1, S2, A, frequency 
+ORDER BY frequency DESC LIMIT 5","[{'center': C4', 'angle': 'R6',  'frequency': 27}, {'center': C2', 'angle': 'R2',  'frequency': 26}, {'center': C4', 'angle': 'R1',  'frequency': 22}, {'center': C2', 'angle': 'R1',  'frequency': 22}, {'center': C2', 'angle': 'R4',  'frequency': 17}]","Based on the provided database context, the following position parameters typically lead to a 'medium' stress status across the entire dataset:
+
+Configuration: C4 - R6  (Simulation Count: 27)
+
+Configuration: C2 - R2  (Simulation Count: 26)
+
+Configuration: C4 - R1  (Simulation Count: 22)
+
+Configuration: C2 - R1  (Simulation Count: 22)
+
+Configuration: C2 - R4  (Simulation Count: 17)",,1.0,"The expected output is fully aligned with the retrieval context. Each configuration listed in the expected output is directly supported by the data in the retrieval context, with matching simulation counts for 'medium' stress status. There are no gaps or discrepancies between the expected output and the retrieval context, indicating complete sufficiency in covering all aspects of the expected output.",0.941,"The retrieval context directly addresses the main topic by providing a Cypher query and results that identify Position Parameters associated with a 'medium' stress status, fulfilling the input's request. It enhances understanding by listing specific combinations of C_EllipseCnter and R_RotationAngle with their event counts, which are relevant to determining typical parameters. There is no contradictory or irrelevant information, and the coherence between the input and retrieval context is strong, as the context logically follows from the input question.",0.956,"The actual output accurately extracts and lists the top 10 position parameters based on event counts, aligning with the retrieval context data. It correctly notes that the data does not directly link these parameters to a 'medium' stress status, addressing the discrepancy between the question and the available data. This demonstrates a clear understanding of the context and a faithful representation of the data provided.",0.318,"The response identifies the most frequent position parameters but fails to directly address the core objective of identifying parameters leading to a 'medium' stress status. It acknowledges the lack of direct linkage to stress status, which is a relevant context, but does not provide the specific answer sought by the input question.",0.455,"The actual output provides a list of position parameters with event counts, similar to the expected output. However, it explicitly states that the data does not link these parameters to a 'medium' stress status, which is a key aspect of the expected output. While the core facts about the parameters and counts align, the actual output lacks the specific conclusion about 'medium' stress status, leading to partial alignment."
+23,24,Schema/Summary,Calculate the difference of 'large' stress events to 'small' stress events across all tested designs.,,,Error,0,0,"{neo4j_code: Neo.ClientError.Statement.SyntaxError} {message: Invalid input 'PIVOT': expected ',', 'ORDER BY', 'CALL', 'CREATE', 'LOAD CSV', 'DELETE', 'DETACH', 'FINISH', 'FOREACH', 'INSERT', 'LIMIT', 'MATCH', 'MERGE', 'NODETACH', 'OFFSET', 'OPTIONAL', 'REMOVE', 'RETURN', 'SET', 'SKIP', 'UNION', 'UNWIND', 'USE', 'WHERE', 'WITH' or <EOF> (line 3, column 1 (offset: 102))
+""PIVOT (""
+ ^} {gql_status: 42001} {gql_status_description: error: syntax error or access rule violation - invalid syntax}","MATCH (i:ID)-[:HAS_STRESS_STATUS]->(s:Stress_Status)
+WITH 
+  count(CASE WHEN s.Status = 'large' THEN 1 END) AS large_count,
+  count(CASE WHEN s.Status = 'small' THEN 1 END) AS small_count
+RETURN large_count - small_count AS difference",[{'difference': -290}],"Based on the provided database query results, the difference between 'large' stress events and 'small' stress events across all tested designs is -290. ",,0.0,Hardcoded Bypass: Cypher failed.,0.0,Hardcoded Bypass: Cypher failed.,0.0,Hardcoded Bypass: Cypher failed.,0.0,Hardcoded Bypass: Cypher failed.,0.0,Hardcoded Bypass: Cypher failed.
+25,26,Schema/Summary,List 5 shape parameter clusters that have never resulted in a 'large' stress event in any historical test.,"MATCH (sh:Shape_Parameters)
+OPTIONAL MATCH (sh)<-[:HAS_SHAPE_PARAMETERS]-(i:ID)-[:HAS_STRESS_STATUS]->(s:Stress_Status {Status: 'large'})
+WITH sh, count(i) AS large_count
+WHERE large_count = 0
+RETURN sh.A_Area
+LIMIT 5
+","[{'sh.A_Area': 'A6'}, {'sh.A_Area': 'A6'}, {'sh.A_Area': 'A6'}, {'sh.A_Area': 'A2'}, {'sh.A_Area': 'A2'}]","Based on the database records, here are the top 5 shape parameter clusters that have not resulted in a 'large' stress event:
+
+1.  A6 (3 occurrences)
+2.  A2 (2 occurrences)
+
+",1,1,,"MATCH (s:Shape_Parameters)
+WHERE NOT EXISTS {
+  MATCH (s)<-[:HAS_SHAPE_PARAMETERS]-(i:ID)-[:HAS_STRESS_STATUS]->(st:Stress_Status)
+  WHERE st.Status = 'large'
+}
+RETURN s.A_Area, s.S1_LongMajorAxis, s.S2_ShortMajorAxis LIMIT 5","[{'s.Area':'A6', 's.S1_LongMajorAxis':'S13','s.S2_ShortMajorAxis':'S24'},{'s.Area':'A6', 's.S1_LongMajorAxis':'S14','s.S2_ShortMajorAxis':'S24'},{'s.Area':'A6', 's.S1_LongMajorAxis':'S16','s.S2_ShortMajorAxis':'S24'},{'s.Area':'A2', 's.S1_LongMajorAxis':'S13','s.S2_ShortMajorAxis':'S24'},{'s.Area':'A2', 's.S1_LongMajorAxis':'S16','s.S2_ShortMajorAxis':'S22'}]","Based on the provided database context, the following shape parameter clusters have never resulted in a 'large' stress event in any historical test:
+
+Configuration: A6 - S13 - S24
+
+Configuration: A6 - S14 - S24
+
+Configuration: A6 - S16 - S24
+
+Configuration: A2 - S13 - S24
+
+Configuration: A2 - S16 - S22",,0.24,"The retrieval context provides a query and a result set indicating shape parameter clusters with 'A_Area' values that have not resulted in a 'large' stress event. However, it only includes 'A_Area' values ('A6' and 'A2') without the full configuration details (e.g., 'S13', 'S24') needed to fully support the expected output. This results in a significant gap as the expected output specifies complete configurations, which are not directly supported by the retrieval context.",0.784,"The retrieval_context directly addresses the main topic by providing a Cypher query that identifies shape parameter clusters with no 'large' stress events, aligning with the input request. It enhances understanding by showing the query logic and the resulting data set. However, the repetition of 'A6' and 'A2' in the result set slightly detracts from the clarity, as it suggests fewer unique clusters than requested. There is no contradictory or irrelevant information, and the coherence between the input and retrieval_context is strong.",0.878,"The actual output correctly identifies the shape parameter clusters A6 and A2 as not resulting in a 'large' stress event, aligning with the retrieval context. The output accurately reflects the database result set, listing A6 with 3 occurrences and A2 with 2 occurrences. However, it does not explicitly state that these are the only clusters, which slightly affects completeness.",0.362,"The response partially addresses the core objective by listing shape parameter clusters that have not resulted in a 'large' stress event. However, it only provides two clusters instead of the requested five, which is a significant shortcoming. The response does not include any additional context or explanation, which could have been beneficial, but this is not penalized according to the evaluation steps.",0.28,"The primary factual conclusion in the expected output is a list of specific shape parameter configurations that have never resulted in a 'large' stress event. The actual output provides a list of shape parameter clusters, A6 and A2, but lacks the specific configurations and only lists two clusters instead of five. While the clusters A6 and A2 are mentioned in both outputs, the actual output is incomplete and lacks the detailed configurations present in the expected output."
+36,37,Prediction/Inverse,What is the chance of getting 'small' stress if I use the specific geometry cluster Area A3 and Rotation R4?,,[],"No data was found in the database matching the criteria (Area A3 and Rotation R4). It is possible that this specific combination has not been tested within the simulation datasets, or the clusters specified (A3, R4) do not exist in the records.
+",0,0,,"MATCH (id:ID)-[:HAS_SHAPE_PARAMETERS]->(shape:Shape_Parameters {A_Area: 'A3'})
+MATCH (id)-[:HAS_POSITION_PARAMETERS]->(pos:Position_Parameters {R_RotationAngle: 'R4'})
+MATCH (id)-[:HAS_STRESS_STATUS]->(stress:Stress_Status)
+WITH COUNT(id) AS total, SUM(CASE WHEN stress.Status = 'small' THEN 1 ELSE 0 END) AS small_count
+RETURN CASE WHEN total > 0 THEN 1.0 * small_count / total ELSE 0.0 END AS chance",[{'chance': 0.42857142857142855}],"Based on the provided database context, the  chance of obtaining 'small' stress when using the specific geometry cluster **Area A3** and **Rotation R4** is:
+
+**Probability: 0.4286 (or approximately 42.86%)**
+",,0.0,Hardcoded Bypass: Empty context check.,0.0,Hardcoded Bypass: Empty context check.,1.0,Hardcoded Bypass: Faithfulness on empty set.,0.626,"The response correctly identifies that there is no data available for the specified geometry cluster and rotation, addressing the core objective of the user's question. However, it does not provide any additional context or potential next steps, which could enhance the response.",0.191,"The primary factual conclusion in the expected output is a specific probability of 42.86% for obtaining 'small' stress with Area A3 and Rotation R4. The actual output states that no data was found for this combination, indicating a lack of information rather than a probability. The conclusions do not match conceptually or factually, as one provides a probability and the other indicates missing data. The actual output's explanation about missing data is neutral but does not align with the expected probability result."
+48,49,Prediction/Inverse,"What is the most common stress status for the design configuration: Shape S22, Position C1, Area A2?","MATCH (sh:Shape_Parameters {S1_LongMajorAxis:'S22', A_Area:'A2'})<-[:HAS_SHAPE_PARAMETERS]-(i:ID)-[:HAS_POSITION_PARAMETERS]->(p:Position_Parameters {C_EllipseCnter:'C1'})
+MATCH (i)-[:HAS_STRESS_STATUS]->(s:Stress_Status)
+RETURN s.Status, count(i) AS frequency
+ORDER BY frequency DESC
+",[],"No data was found in the database matching the criteria (Shape S22, Position C1, Area A2). It is possible that this specific combination has not been tested within the simulation datasets, or the clusters specified (S22, C1, A2) do not exist in the records.
+",0,1,,"MATCH (i:ID)-[:HAS_SHAPE_PARAMETERS]->(sp:Shape_Parameters), 
+      (i)-[:HAS_POSITION_PARAMETERS]->(pp:Position_Parameters), 
+      (i)-[:HAS_STRESS_STATUS]->(ss:Stress_Status)
+WHERE sp.A_Area = 'A2' AND sp.S2_ShortMajorAxis = 'S22' AND pp.C_EllipseCnter = 'C1'
+RETURN ss.Status, COUNT(*) AS count
+ORDER BY count DESC
+LIMIT 1    ","[{'st.Status': 'small', 'count': 19}]","Based on the provided database context, the most common stress status for the  design configuration using Shape S22, Position C1, and Area A2 is ""small"". This conclusion is directly supported by a recorded count of 19 instances in the dataset.",,0.0,Hardcoded Bypass: Empty context check.,0.0,Hardcoded Bypass: Empty context check.,1.0,Hardcoded Bypass: Faithfulness on empty set.,0.707,"The response correctly identifies that there is no data available for the specified design configuration, addressing the core objective of the user's question. However, it does not provide a direct answer to the most common stress status, as the data is unavailable. The explanation about the potential reasons for the lack of data adds useful context.",0.085,"The primary factual conclusion in the expected output is that the most common stress status for the specified design configuration is 'small', supported by a count of 19 instances. The actual output states that no data was found matching the criteria, indicating a complete mismatch in conclusions. The core facts do not align, resulting in a low correctness score."
